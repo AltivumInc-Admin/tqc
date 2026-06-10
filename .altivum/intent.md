@@ -25,6 +25,19 @@ a room built by someone who actually understands my world."
   about what exists at launch is a feature.
 
 ## Living
+- 2026-06-10: The product is named "The Ground State Society" (renamed from
+  "The Quantum Collective"); the ground state — |0⟩, lowest-energy, stable by
+  construction — is the brand metaphor, carried by the mark (a particle
+  settled in a potential well) and the hero's relaxation scene. Because:
+  founder decision, 2026-06-10.
+- 2026-06-10: Palette decided — the comparison toggle is retired. The strict
+  60/20/10/10 now reads Ghost #F7F7FF / Powder #C1D8E2 / Sand #B7A781 /
+  Umber #432D16, with black #08080A as the architectural panel tone.
+  Aesthetic direction: ghost editorial sheets alternating with black data
+  panels (DOSS reference), wide Archivo display caps, IBM Plex Mono label
+  layer, GSAP scroll choreography, Three.js ground-state hero. WCAG AA holds
+  on both grounds. Because: founder compared palettes A/B/C in the toggle and
+  supplied reference screenshots; A and B retired.
 - 2026-06-10: The quantum figure system (fig. 01–04) and superposition type
   effect must stay scientifically accurate — credibility with PhD founders
   is the audience filter. Because: initial authoring.

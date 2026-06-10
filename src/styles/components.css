@@ -174,7 +174,7 @@
   }
 }
 
-/* ============ Hero ============ */
+/* ============ Hero (bento) ============ */
 
 .hero {
   position: relative;
@@ -183,45 +183,54 @@
   display: flex;
 }
 
-.hero-scene {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-}
-
-.hero-scene canvas {
-  width: 100% !important;
-  height: 100% !important;
-}
-
 .hero-frame {
   position: relative;
   z-index: 1;
   width: 100%;
-  min-height: 100svh;
   display: flex;
   flex-direction: column;
-  padding-top: calc(var(--nav-h) + 1.5rem);
-  padding-bottom: 1.5rem;
+  padding-top: calc(var(--nav-h) + 1rem);
+  padding-bottom: 1rem;
 }
 
-.hero-topline {
+.hero-bento {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(19rem, 1fr) auto;
+  grid-template-areas:
+    'tl tr'
+    'wm wm'
+    'scene side'
+    'meta meta';
+  gap: 0.85rem;
+  min-height: calc(100svh - var(--nav-h) - 2rem);
+}
+
+/* Bento cell — hairline-framed box on black */
+.bx {
+  border: 1px solid var(--line);
+  background: rgba(247, 247, 255, 0.025);
+  padding: 0.9rem 1.2rem;
+  margin: 0;
+}
+
+.bx-label {
+  grid-area: tl;
   display: flex;
-  justify-content: space-between;
-  gap: 2rem;
+  align-items: center;
   color: var(--ink-mute);
 }
 
-.hero-topline-right {
+.bx-label-right {
+  grid-area: tr;
+  justify-content: flex-end;
   text-align: right;
 }
 
-.hero-content {
-  margin-top: auto;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: clamp(1.5rem, 3vh, 2.5rem);
-  padding-top: 2rem;
+.bx-wordmark {
+  grid-area: wm;
+  padding: 1.1rem 1.4rem 0.8rem;
 }
 
 .hero-wordmark {
@@ -248,21 +257,59 @@
   letter-spacing: 0.015em;
 }
 
-.hero-side {
+/* The star cell: the ground-state scene. On scroll it zooms out of the
+   bento to swallow the viewport, then dissolves into section 02. */
+.bx-scene {
+  grid-area: scene;
+  position: relative;
+  z-index: 2;
+  padding: 0;
+  overflow: clip;
+  min-height: 19rem;
+  background: var(--black);
+  will-change: transform;
+}
+
+.bx-scene .hero-scene {
+  position: absolute;
+  inset: 0;
+}
+
+.bx-scene .hero-scene canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Physics notation is case-sensitive: ħω, α, β must survive */
+.scene-ket {
+  position: absolute;
+  top: 0.9rem;
+  right: 1.1rem;
+  z-index: 1;
+  color: var(--accent);
+  text-transform: none;
+}
+
+.scene-caption {
+  position: absolute;
+  left: 1.1rem;
+  bottom: 0.85rem;
+  z-index: 1;
+  max-width: 50ch;
+  color: var(--ink-mute);
+  text-transform: none;
+}
+
+.bx-side {
+  grid-area: side;
   display: grid;
-  gap: 1.6rem;
-  max-width: 36rem;
-  justify-self: end;
-  /* Scrim panel — keeps the lede legible over the particle cloud */
-  background: rgba(8, 8, 10, 0.72);
-  -webkit-backdrop-filter: blur(9px);
-  backdrop-filter: blur(9px);
-  border: 1px solid var(--line);
-  padding: clamp(1.4rem, 2.5vw, 1.9rem);
+  gap: 1.5rem;
+  align-content: center;
+  padding: clamp(1.2rem, 2vw, 1.8rem);
 }
 
 .hero-lede {
-  font-size: clamp(1rem, 0.95rem + 0.35vw, 1.18rem);
+  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.14rem);
   line-height: 1.6;
   color: var(--ink-soft);
 }
@@ -278,9 +325,11 @@
   gap: 0.9rem;
 }
 
-.hero-meta {
+.bx-meta {
+  grid-area: meta;
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.4rem 0;
   color: var(--ink-mute);
 }
@@ -291,85 +340,27 @@
   margin-inline: 1rem;
 }
 
-.hero-caption {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 2rem;
-  margin-top: clamp(1.5rem, 3vh, 2.5rem);
-  padding-top: 1.1rem;
-  border-top: 1px solid var(--line);
-  color: var(--ink-mute);
-  /* Physics notation is case-sensitive: ħω, α, β must survive */
-  text-transform: none;
-}
-
-.hero-caption p {
-  max-width: 52ch;
-}
-
-.hero-ket {
-  color: var(--accent);
-  white-space: nowrap;
-}
-
-.hero-cue {
-  position: absolute;
-  left: 50%;
-  bottom: 1.4rem;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.6rem;
-  color: var(--ink-mute);
-  font-size: 0.6rem;
-}
-
-.hero-cue-line {
-  width: 1px;
-  height: 2.6rem;
-  background: var(--line-strong);
-  transform-origin: top;
-  animation: cue-pulse 2.6s var(--ease-out) infinite;
-}
-
-@keyframes cue-pulse {
-  0% {
-    transform: scaleY(0);
-  }
-
-  45% {
-    transform: scaleY(1);
-  }
-
-  100% {
-    transform: scaleY(1);
-    opacity: 0;
-  }
-}
-
 @media (max-width: 920px) {
-  .hero-side {
-    justify-self: start;
+  .hero-bento {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto minmax(20rem, 42svh) auto auto;
+    grid-template-areas:
+      'tl'
+      'wm'
+      'scene'
+      'side'
+      'meta';
   }
 
-  .hero-caption {
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-
-  .hero-ket {
-    white-space: normal;
-  }
-
-  .hero-cue {
+  .bx-label-right {
     display: none;
   }
-}
 
-@media (max-width: 600px) {
-  .hero-topline-right {
+  .bx-side {
+    align-content: start;
+  }
+
+  .scene-ket {
     display: none;
   }
 }
