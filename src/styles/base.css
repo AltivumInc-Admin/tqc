@@ -32,7 +32,7 @@ body::after {
   pointer-events: none;
   opacity: 0.3;
   mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.64 0 0 0 0 0.6 0 0 0 0 0.55 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 img,
@@ -64,17 +64,23 @@ h4 {
   text-wrap: balance;
 }
 
+/* Display-tight 1.08 is for h1/h2 scale; wrapping card headings need air */
+h3,
+h4 {
+  line-height: 1.25;
+}
+
 p {
   text-wrap: pretty;
 }
 
 ::selection {
-  background: var(--accent-display);
+  background: var(--chestnut-ink);
   color: var(--parchment);
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent-display);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 3px;
   border-radius: 2px;
 }
@@ -90,7 +96,7 @@ p {
 .section {
   padding-block: var(--space-section);
   position: relative;
-  scroll-margin-top: 5.5rem;
+  scroll-margin-top: var(--anchor-offset);
 }
 
 /* Numbered kicker — ties the page to the blueprint (03–08) */
@@ -220,6 +226,13 @@ p {
 .reveal.is-in {
   opacity: 1;
   transform: none;
+}
+
+/* Atomic palette swap — suppress transitions for the swap frame only */
+.theme-swap *,
+.theme-swap *::before,
+.theme-swap *::after {
+  transition: none !important;
 }
 
 /* ---- Accessibility ---- */

@@ -1,7 +1,8 @@
 /*
  * fig. 02 — wave–particle duality.
- * The same wavefunction ψ(x) drawn twice: a continuous wave on the left,
- * discrete detection events sampling |ψ|² on the right. Both are true.
+ * The same curve ψ(x) drawn twice: a continuous wave on the left,
+ * discrete samples of the same curve on the right (dot radius scales
+ * with |ψ| for visual weight). Both descriptions are true.
  * Draw-in animates when the parent .reveal enters the viewport.
  */
 const W = 720

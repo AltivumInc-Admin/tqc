@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom'
 import Reveal from '../components/Reveal.jsx'
 import BlochSphere from '../components/figures/BlochSphere.jsx'
 import FigCaption from '../components/figures/FigCaption.jsx'
+import { postJson } from '../lib/submit.js'
+
+const SIGNAL_ENDPOINT = import.meta.env.VITE_SIGNAL_ENDPOINT
 
 const STEPS = [
   {
@@ -48,11 +51,24 @@ const FAQS = [
 
 function SignalForm() {
   const [email, setEmail] = useState('')
-  const [done, setDone] = useState(false)
+  // idle | sending | sent | preview | error
+  const [status, setStatus] = useState('idle')
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
-    if (email.trim()) setDone(true)
+    if (!email.trim()) return
+    if (!SIGNAL_ENDPOINT) {
+      // Honest preview: the address is not transmitted or stored.
+      setStatus('preview')
+      return
+    }
+    setStatus('sending')
+    try {
+      await postJson(SIGNAL_ENDPOINT, { form: 'signal', email })
+      setStatus('sent')
+    } catch {
+      setStatus('error')
+    }
   }
 
   return (
@@ -69,11 +85,18 @@ function SignalForm() {
         </p>
       </div>
       <div>
-        {done ? (
+        {status === 'sent' && (
           <p className="signal-success" role="status">
             <strong>You’re in.</strong> The next issue of The Signal will land in your inbox.
           </p>
-        ) : (
+        )}
+        {status === 'preview' && (
+          <p className="signal-success" role="status">
+            <strong>Noted — The Signal launches with the founding cohort.</strong> This preview
+            didn’t store your address; subscription opens at launch.
+          </p>
+        )}
+        {(status === 'idle' || status === 'sending' || status === 'error') && (
           <form className="signal-form" onSubmit={handleSubmit} aria-label="Subscribe to The Signal newsletter">
             <label className="visually-hidden" htmlFor="signal-email">
               Email address
@@ -84,15 +107,29 @@ function SignalForm() {
               required
               placeholder="you@quantumstartup.com"
               autoComplete="email"
+              maxLength={320}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <button type="submit" className="btn btn-on-dark">
-              Subscribe free
+            <button
+              type="submit"
+              className="btn btn-on-dark"
+              aria-busy={status === 'sending'}
+              disabled={status === 'sending'}
+            >
+              {status === 'sending' ? 'Subscribing…' : 'Subscribe free'}
             </button>
           </form>
         )}
-        <p className="signal-note">No spam. No vendor pitches. Unsubscribe anytime.</p>
+        {status === 'error' && (
+          <p className="form-error" role="alert">
+            That didn’t go through — try again in a moment.
+          </p>
+        )}
+        <p className="signal-note">
+          No spam. No vendor pitches. Unsubscribe anytime.
+          {!SIGNAL_ENDPOINT && ' Preview — subscription opens at launch.'}
+        </p>
       </div>
     </div>
   )

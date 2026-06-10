@@ -8,10 +8,9 @@ dist/
 *.log
 npm-debug.log*
 
-# Environment
-.env
-.env.local
-.env.*.local
+# Environment — Vite loads .env.production/.env.development too
+.env*
+!.env.example
 
 # OS
 .DS_Store

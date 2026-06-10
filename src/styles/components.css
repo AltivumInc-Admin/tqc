@@ -19,7 +19,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  height: 4.25rem;
+  height: var(--nav-h);
 }
 
 .nav-brand {
@@ -126,7 +126,7 @@
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  border: 1px solid rgba(5, 4, 11, 0.25);
+  border: 1px solid color-mix(in srgb, var(--ink) 25%, transparent);
 }
 
 .palette-dot + .palette-dot {
@@ -209,6 +209,7 @@
 .hero {
   padding-block: clamp(2.5rem, 2rem + 2.5vw, 4.5rem) clamp(3.5rem, 3rem + 3vw, 5.5rem);
   overflow: hidden;
+  scroll-margin-top: var(--anchor-offset);
 }
 
 .hero-grid {
@@ -323,14 +324,36 @@
     margin-bottom: 0.5rem;
     opacity: 0.9;
   }
+
+  /* Promise first on phones: caption stays in the accessibility tree only
+     (same pattern as .visually-hidden, applied per-breakpoint) */
+  .hero-figure .fig-caption {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
 }
 
 /* ---- The quantum figure system (fig. 01–04) ---- */
 
-/* Superposition type effect: the accent phrase loads as two offset ghost
-   states and collapses into one — measurement. Reduced motion skips it. */
+/* Superposition type effect: the accent phrase holds two offset ghost
+   states until the real typeface is ready (html.fonts-ready, set in
+   main.jsx), then collapses into one — measurement happens exactly once.
+   Reduced motion skips it. */
 .superposition {
-  animation: state-collapse 1.7s var(--ease-out) 0.55s both;
+  text-shadow:
+    0.16em 0 0 var(--state-ghost-a),
+    -0.16em 0 0 var(--state-ghost-b);
+  opacity: 0.82;
+}
+
+.fonts-ready .superposition {
+  animation: state-collapse 1.7s var(--ease-out) 0.15s both;
 }
 
 @keyframes state-collapse {
@@ -355,9 +378,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .superposition {
+  .superposition,
+  .fonts-ready .superposition {
     animation: none;
     text-shadow: none;
+    opacity: 1;
   }
 }
 
@@ -609,7 +634,7 @@
 }
 
 .whitespace-callout strong {
-  color: var(--accent-display);
+  color: var(--chestnut-ink);
   font-style: normal;
   font-weight: 600;
 }
@@ -729,6 +754,7 @@
   font-weight: 480;
   font-variation-settings: 'opsz' 100;
   line-height: 1;
+  font-variant-numeric: lining-nums tabular-nums;
   color: var(--accent-display);
   margin-bottom: 0.6rem;
 }
@@ -796,6 +822,8 @@
   border: 1px solid var(--line-strong);
   border-radius: var(--radius);
   background: var(--parchment);
+  scrollbar-width: thin;
+  scrollbar-color: var(--mushroom) var(--parchment-deep);
 }
 
 .compare-table {
@@ -822,6 +850,7 @@
   text-align: left;
   border-bottom: 1px solid var(--line);
   vertical-align: top;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 .compare-table thead th {
@@ -981,8 +1010,8 @@
   width: 100%;
   transform: rotate(-0.6deg);
   box-shadow:
-    0 1px 2px rgba(5, 4, 11, 0.12),
-    0 12px 32px -12px rgba(5, 4, 11, 0.28);
+    0 1px 2px color-mix(in srgb, var(--ink) 12%, transparent),
+    0 12px 32px -12px color-mix(in srgb, var(--ink) 28%, transparent);
   /* perforated top & bottom */
   -webkit-mask-image:
     radial-gradient(circle at 0.5rem 0, transparent 0.32rem, black 0.34rem),
@@ -1086,7 +1115,7 @@
   top: 1.1rem;
   right: -0.6rem;
   transform: rotate(7deg);
-  border: 2px solid var(--chestnut-ink);
+  border: 2px solid color-mix(in srgb, var(--chestnut-ink) 72%, transparent);
   color: var(--chestnut-ink);
   border-radius: var(--radius);
   padding: 0.3rem 0.6rem;
@@ -1094,7 +1123,6 @@
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  opacity: 0.85;
 }
 
 /* ---- Tiers ---- */
@@ -1141,6 +1169,7 @@
   font-family: var(--font-display);
   font-size: 2rem;
   font-weight: 500;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 .tier-price small {
@@ -1225,6 +1254,21 @@
   border-radius: 99px;
   padding: 0.25rem 0.7rem;
   margin-bottom: 0.85rem;
+}
+
+/* Price rows rule up across cards where subgrid is available */
+@media (min-width: 921px) {
+  @supports (grid-template-rows: subgrid) {
+    .tiers {
+      grid-template-rows: auto auto 1fr auto;
+    }
+
+    .tier {
+      display: grid;
+      grid-template-rows: subgrid;
+      grid-row: span 4;
+    }
+  }
 }
 
 @media (max-width: 920px) {
@@ -1359,6 +1403,29 @@
   max-width: 62ch;
 }
 
+/* FAQ open/close — animates where interpolate-size is supported,
+   snaps (today's behavior) elsewhere; reduced-motion blanket applies */
+@supports (interpolate-size: allow-keywords) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+
+  .faq-item::details-content {
+    block-size: 0;
+    overflow: clip;
+    opacity: 0;
+    transition:
+      block-size 0.35s var(--ease-out),
+      opacity 0.3s var(--ease-out),
+      content-visibility 0.35s allow-discrete;
+  }
+
+  .faq-item[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+}
+
 /* The Signal — newsletter capture */
 
 .signal {
@@ -1370,12 +1437,13 @@
   grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
   gap: clamp(2rem, 4vw, 4rem);
   align-items: center;
-  scroll-margin-top: 6rem;
+  scroll-margin-top: var(--anchor-offset);
 }
 
 .signal h3 {
   font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem);
   margin-bottom: 0.75rem;
+  line-height: 1.15;
 }
 
 .signal h3 em {
@@ -1420,6 +1488,12 @@
 
 .signal-form input::placeholder {
   color: var(--on-dark-mute);
+}
+
+/* Focus ring on dark grounds — parchment passes >=3:1 in both palettes */
+.signal :focus-visible,
+.footer :focus-visible {
+  outline-color: var(--parchment);
 }
 
 .signal-form input:focus-visible {
@@ -1609,6 +1683,7 @@
 .field {
   display: grid;
   gap: 0.45rem;
+  align-content: start;
 }
 
 .field-row {
@@ -1651,8 +1726,8 @@
 .field input:focus-visible,
 .field select:focus-visible,
 .field textarea:focus-visible {
-  outline-color: var(--chestnut);
-  border-color: var(--chestnut);
+  outline-color: var(--chestnut-ink);
+  border-color: var(--chestnut-ink);
 }
 
 .apply-form .btn {
@@ -1702,6 +1777,69 @@
 
 .back-link:hover {
   color: var(--chestnut-ink);
+}
+
+/* Pre-funded routing note — The Round is for funded founders */
+.route-note {
+  border: 1px solid var(--chestnut-line);
+  background: var(--chestnut-wash);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  display: grid;
+  gap: 0.9rem;
+  justify-items: start;
+}
+
+.route-note p {
+  font-size: var(--text-sm);
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+.route-note strong {
+  color: var(--ink);
+}
+
+/* Designed validation — quiet mono hints, no OS bubbles */
+.field-hint {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.apply-form.was-validated input:invalid,
+.apply-form.was-validated select:invalid,
+.apply-form.was-validated textarea:invalid,
+.apply-form input:user-invalid,
+.apply-form select:user-invalid,
+.apply-form textarea:user-invalid {
+  border-color: var(--chestnut-ink);
+}
+
+.apply-form.was-validated .field:has(:invalid) label,
+.apply-form .field:has(:user-invalid) label,
+.apply-form.was-validated .field:has(:invalid) .field-hint {
+  color: var(--chestnut-ink);
+}
+
+/* Submission states (shared by apply + signal forms) */
+.form-error {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+  color: var(--chestnut-ink);
+}
+
+.signal .form-error {
+  color: var(--parchment);
+}
+
+.btn[aria-busy='true'] {
+  opacity: 0.65;
+  pointer-events: none;
 }
 
 /* Oversized ghost numerals anchoring each section */

@@ -19,7 +19,7 @@ export default function Landing() {
           <WaveParticle />
           <FigCaption num="02">
             Wave–particle duality. One system, two true descriptions — a continuous wave, and
-            discrete events sampling it. Both are the network.
+            discrete samples of the same curve. Both are the network.
           </FigCaption>
         </div>
       </Reveal>

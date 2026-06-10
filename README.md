@@ -70,9 +70,30 @@ npm run preview  # serve the production build locally
 ## Routes
 
 - `/` — the landing page
-- `/apply` — placeholder membership application (no backend wired yet; the submit handler in
-  `src/pages/Apply.jsx` is where to connect a form service)
-- `/#signal` — The Signal free-newsletter capture (same placeholder note)
+- `/apply` — membership application
+- `/#signal` — The Signal free-newsletter capture
+
+## Form intake (environment variables)
+
+Both forms submit JSON via `src/lib/submit.js` to endpoints injected at build time:
+
+| Variable | Form | Payload |
+| --- | --- | --- |
+| `VITE_APPLY_ENDPOINT` | `/apply` application | `{ form: "apply", name, email, company, role, applicantType, stage, modality, want }` |
+| `VITE_SIGNAL_ENDPOINT` | The Signal subscribe | `{ form: "signal", email }` |
+
+Set them in the Amplify console (App settings → Environment variables) or in a local `.env`
+file; Vite inlines them at build. **When an endpoint is unset, the forms render an honest
+preview state** — nothing is transmitted or stored, and the UI says so. Self-identified
+pre-funded applicants are routed to The Signal instead of the application submit, per the
+strategy's funnel rule.
+
+Endpoints must be `https://` (the client refuses anything else) and, since they accept
+unauthenticated public POSTs, the receiving side must re-validate shape and length, enforce a
+body-size limit, and rate-limit per IP — client-side validation and `maxLength` are courtesy
+caps only. Add a honeypot/turnstile before real launch (newsletter endpoints attract
+subscription-bombing bots), and fill in the Content-Security-Policy template in
+`customHttp.yml` once the endpoint origins are known.
 
 ## Deploying to AWS Amplify Hosting (GitHub CI/CD)
 
@@ -88,11 +109,12 @@ Setup:
 1. In the Amplify console, **Create new app → GitHub** and select
    `AltivumInc-Admin/tqc`, branch `main`. Amplify detects Vite and uses the committed
    `amplify.yml`.
-2. **SPA routing**: Amplify auto-creates a 200 rewrite for detected SPAs. If deep links such as
-   `/apply` ever 404, add this rule under **Hosting → Rewrites and redirects**:
-   - Source: `</^[^.]+$|\.(?!(css|gif|ico|jpg|js|png|txt|svg|woff|woff2|ttf|map|json|webp)$)([^.]+$)/>`
-   - Target: `/index.html` · Type: `200 (Rewrite)`
-3. Every push to `main` triggers a build and deploy.
+2. **SPA routing**: Amplify auto-creates a 200 rewrite for detected SPAs. The exact rule is
+   versioned at `infra/amplify-rewrites.json` — paste it under **Hosting → Rewrites and
+   redirects** if deep links such as `/apply` ever 404.
+3. After the first deploy, verify deep-link routing:
+   `./scripts/verify-deploy.sh https://<branch>.<app-id>.amplifyapp.com`
+4. Every push to `main` triggers a build and deploy.
 
 ## Project structure
 

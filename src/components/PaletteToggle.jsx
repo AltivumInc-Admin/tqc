@@ -35,11 +35,21 @@ export default function PaletteToggle() {
 
   useEffect(() => {
     const root = document.documentElement
+    // Atomic swap: suppress color transitions for the swap frame so the
+    // comparison never renders a frame that is neither candidate.
+    root.classList.add('theme-swap')
     if (theme === 'ember') {
       delete root.dataset.theme
     } else {
       root.dataset.theme = theme
     }
+    // Browser chrome follows the active palette (mirrors index.html pre-paint)
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', theme === 'olive' ? '#E3E4DC' : '#E7E1D4')
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => root.classList.remove('theme-swap'))
+    })
     try {
       localStorage.setItem('tqc-theme', theme)
     } catch {

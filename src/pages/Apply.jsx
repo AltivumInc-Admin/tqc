@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Reveal from '../components/Reveal.jsx'
+import { postJson } from '../lib/submit.js'
+
+const APPLY_ENDPOINT = import.meta.env.VITE_APPLY_ENDPOINT
 
 const MODALITIES = [
   'Quantum hardware',
@@ -40,19 +43,46 @@ const INITIAL_FORM = {
 
 export default function Apply() {
   const [form, setForm] = useState(INITIAL_FORM)
-  const [submitted, setSubmitted] = useState(false)
+  // idle | sending | sent | preview | error
+  const [status, setStatus] = useState('idle')
+  const [attempted, setAttempted] = useState(false)
+
+  // The Round is for funded founders — self-identified pre-funded
+  // applicants are routed to the free Signal tier instead of the paywall.
+  const preFunded =
+    form.applicantType === 'Pre-funded founder' ||
+    form.stage === 'Not yet funded — interested in The Signal'
 
   function update(e) {
     const { name, value } = e.target
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
-    // Placeholder: POST `form` to the application backend / form service before launch.
-    setSubmitted(true)
-    window.scrollTo(0, 0)
+    if (!e.target.checkValidity()) {
+      setAttempted(true)
+      e.target.querySelector(':invalid')?.focus()
+      return
+    }
+    setAttempted(false)
+    if (!APPLY_ENDPOINT) {
+      // Honest preview: nothing is transmitted or stored.
+      setStatus('preview')
+      window.scrollTo(0, 0)
+      return
+    }
+    setStatus('sending')
+    try {
+      await postJson(APPLY_ENDPOINT, { form: 'apply', ...form })
+      setStatus('sent')
+      window.scrollTo(0, 0)
+    } catch {
+      setStatus('error')
+    }
   }
+
+  const showForm = status === 'idle' || status === 'sending' || status === 'error'
 
   return (
     <div className="apply-page">
@@ -61,7 +91,7 @@ export default function Apply() {
           <span aria-hidden="true">←</span> Back to the page
         </Link>
 
-        {submitted ? (
+        {status === 'sent' && (
           <Reveal className="apply-success" as="section" aria-live="polite">
             <h2>Application received.</h2>
             <p>
@@ -72,7 +102,22 @@ export default function Apply() {
               Return to the page
             </Link>
           </Reveal>
-        ) : (
+        )}
+
+        {status === 'preview' && (
+          <Reveal className="apply-success" as="section" aria-live="polite">
+            <h2>Application noted — intake opens at launch.</h2>
+            <p>
+              This is a preview build: your application was not transmitted and nothing was
+              stored. Founding-cohort intake opens shortly — The Signal will announce it first.
+            </p>
+            <Link to="/#signal" className="btn btn-ghost">
+              Read The Signal — free
+            </Link>
+          </Reveal>
+        )}
+
+        {showForm && (
           <div className="apply-grid">
             <Reveal className="apply-side" as="aside">
               <h1>Apply to join The Round.</h1>
@@ -90,7 +135,12 @@ export default function Apply() {
             </Reveal>
 
             <Reveal delay={0.1}>
-              <form className="apply-form" onSubmit={handleSubmit} aria-label="Membership application">
+              <form
+                className={`apply-form${attempted ? ' was-validated' : ''}`}
+                onSubmit={handleSubmit}
+                noValidate
+                aria-label="Membership application"
+              >
                 <div className="field-row">
                   <div className="field">
                     <label htmlFor="name">Full name</label>
@@ -99,6 +149,7 @@ export default function Apply() {
                       name="name"
                       type="text"
                       required
+                      maxLength={200}
                       autoComplete="name"
                       value={form.name}
                       onChange={update}
@@ -111,10 +162,15 @@ export default function Apply() {
                       name="email"
                       type="email"
                       required
+                      maxLength={320}
                       autoComplete="email"
+                      aria-describedby="email-hint"
                       value={form.email}
                       onChange={update}
                     />
+                    <p id="email-hint" className="field-hint">
+                      Work email — it’s how we verify the company.
+                    </p>
                   </div>
                 </div>
 
@@ -126,6 +182,7 @@ export default function Apply() {
                       name="company"
                       type="text"
                       required
+                      maxLength={200}
                       autoComplete="organization"
                       value={form.company}
                       onChange={update}
@@ -139,6 +196,7 @@ export default function Apply() {
                       type="text"
                       placeholder="e.g. Co-founder & CEO"
                       required
+                      maxLength={200}
                       value={form.role}
                       onChange={update}
                     />
@@ -207,20 +265,55 @@ export default function Apply() {
                     name="want"
                     placeholder="Capital, customers, talent, peers who get it — tell us plainly."
                     required
+                    maxLength={2000}
                     value={form.want}
                     onChange={update}
                   />
                 </div>
 
-                <button type="submit" className="btn btn-primary">
-                  Submit application
-                  <span className="btn-arrow" aria-hidden="true">
-                    →
-                  </span>
-                </button>
+                {attempted && (
+                  <p className="form-error" role="alert">
+                    A few fields still need attention — they’re marked above.
+                  </p>
+                )}
+
+                {status === 'error' && (
+                  <p className="form-error" role="alert">
+                    Submission didn’t go through — nothing was lost. Try again, or come back
+                    shortly.
+                  </p>
+                )}
+
+                {preFunded ? (
+                  <div className="route-note">
+                    <p>
+                      <strong>The Round is for funded founders — but you’re early, not out.</strong>{' '}
+                      Start free in The Signal; we’ll convert you the day you raise.
+                    </p>
+                    <Link to="/#signal" className="btn btn-primary">
+                      Join The Signal — free
+                    </Link>
+                  </div>
+                ) : (
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    aria-busy={status === 'sending'}
+                    disabled={status === 'sending'}
+                  >
+                    {status === 'sending' ? 'Submitting…' : 'Submit application'}
+                    {status !== 'sending' && (
+                      <span className="btn-arrow" aria-hidden="true">
+                        →
+                      </span>
+                    )}
+                  </button>
+                )}
+
                 <p className="form-note">
                   Reviewed personally. Confidential. Applying creates no obligation — if the room
                   isn’t right for you, we’ll tell you.
+                  {!APPLY_ENDPOINT && !preFunded && ' Preview — intake opens at launch.'}
                 </p>
               </form>
             </Reveal>

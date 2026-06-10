@@ -17,10 +17,15 @@
     <meta property="og:type" content="website" />
     <title>The Quantum Collective — The Private Network for Funded Quantum Founders</title>
     <script>
-      /* Apply the saved palette before first paint to avoid a flash */
+      /* Apply the saved palette before first paint to avoid a flash.
+         Hexes mirror THEMES in src/components/PaletteToggle.jsx. */
       try {
         var t = localStorage.getItem('tqc-theme')
-        if (t && t !== 'ember') document.documentElement.dataset.theme = t
+        if (t && t !== 'ember') {
+          document.documentElement.dataset.theme = t
+          var m = document.querySelector('meta[name="theme-color"]')
+          if (m && t === 'olive') m.setAttribute('content', '#E3E4DC')
+        }
       } catch (e) {}
     </script>
   </head>

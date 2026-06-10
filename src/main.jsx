@@ -14,6 +14,14 @@ import './styles/tokens.css'
 import './styles/base.css'
 import './styles/components.css'
 
+// Gate the hero's superposition collapse on the real typeface so the
+// animation never plays in the fallback serif and re-sets on font swap.
+const markFontsReady = () => document.documentElement.classList.add('fonts-ready')
+if (document.fonts?.ready) {
+  document.fonts.ready.then(markFontsReady)
+}
+setTimeout(markFontsReady, 1500)
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>

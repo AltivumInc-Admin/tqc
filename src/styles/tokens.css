@@ -21,6 +21,7 @@
   --ink-mute: rgba(5, 4, 11, 0.62); /* captions — ~5.4:1 on parchment, AA at any size */
   --chestnut-ink: #8b5340; /* accent pressed darker for small text — 4.7:1 on parchment */
   --accent-display: var(--chestnut); /* accent for large text & decorative glyphs on light ground */
+  --focus-ring: var(--accent-display); /* keyboard focus — ≥3:1 on light ground in both palettes */
   --accent-shadow: rgba(176, 102, 78, 0.45);
   --btn-edge: var(--chestnut); /* primary button border */
   --line: rgba(164, 152, 140, 0.55); /* hairlines */
@@ -56,6 +57,8 @@
   --container: 72rem;
   --container-pad: clamp(1.25rem, 4vw, 2.5rem);
   --radius: 4px;
+  --nav-h: 4.25rem;
+  --anchor-offset: calc(var(--nav-h) + 1.25rem); /* every scroll-margin-top derives from this */
 
   /* ---- Motion ---- */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
