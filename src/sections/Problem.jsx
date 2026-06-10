@@ -14,7 +14,7 @@ const ALTERNATIVES = [
   {
     tag: 'Generalist founder networks',
     title: 'Nobody speaks qubits',
-    body: 'Hampton, EO, and YPO have the peer structure — at $500–$830+ a month — but your “peer group” is a SaaS CEO and a real-estate operator. No quantum capital network, no grant literacy, no domain depth.',
+    body: 'Hampton, EO, and YPO have the peer structure — at $500–$833+ a month — but your “peer group” is a SaaS CEO and a real-estate operator. No quantum capital network, no grant literacy, no domain depth.',
   },
   {
     tag: 'Conferences',

@@ -116,7 +116,7 @@ p {
 }
 
 .kicker strong {
-  color: var(--chestnut);
+  color: var(--chestnut-ink);
   font-weight: 500;
 }
 

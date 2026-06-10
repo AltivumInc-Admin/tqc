@@ -23,7 +23,8 @@ quantum founders ($300/month). Built with React + Vite. Copy is sourced from
 Defined as CSS custom properties in `src/styles/tokens.css`. Contrast notes: body text is
 Obsidian on Parchment (≈16:1); buttons use Obsidian labels on Chestnut fills (≈4.7:1, AA);
 Mushroom is decorative-only on light ground and is used for muted text only on the Obsidian
-footer (≈7:1).
+footer (≈7:1). Small chestnut-toned labels use `--chestnut-ink` (#8B5340), a pressed shade of
+Chestnut that passes AA (≈4.7:1) on Parchment — pure Chestnut text appears only at large sizes.
 
 ## Install
 

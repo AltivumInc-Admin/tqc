@@ -10,8 +10,9 @@ export default function Reveal({ as: Tag = 'div', delay = 0, className = '', chi
 
   useEffect(() => {
     const node = ref.current
-    if (!node || typeof IntersectionObserver === 'undefined') {
-      node?.classList.add('is-in')
+    if (!node) return
+    if (typeof IntersectionObserver === 'undefined') {
+      node.classList.add('is-in')
       return
     }
     const observer = new IntersectionObserver(

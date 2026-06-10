@@ -15,7 +15,8 @@
   --parchment-deep: #ded7c6; /* pressed areas, input fields */
   --ink: var(--obsidian);
   --ink-soft: rgba(5, 4, 11, 0.74); /* secondary text — AA on parchment */
-  --ink-mute: rgba(5, 4, 11, 0.56); /* captions at >=16px only */
+  --ink-mute: rgba(5, 4, 11, 0.62); /* captions — ~5.4:1 on parchment, AA at any size */
+  --chestnut-ink: #8b5340; /* chestnut pressed darker for small text — 4.7:1 on parchment */
   --line: rgba(164, 152, 140, 0.55); /* hairlines */
   --line-strong: rgba(164, 152, 140, 0.9);
   --mushroom-band: rgba(164, 152, 140, 0.18); /* section tint bands */

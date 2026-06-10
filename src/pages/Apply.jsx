@@ -27,12 +27,29 @@ const APPLICANT_TYPES = [
   'Partner / Patron (sponsorship)',
 ]
 
+const INITIAL_FORM = {
+  name: '',
+  email: '',
+  company: '',
+  role: '',
+  applicantType: '',
+  stage: '',
+  modality: '',
+  want: '',
+}
+
 export default function Apply() {
+  const [form, setForm] = useState(INITIAL_FORM)
   const [submitted, setSubmitted] = useState(false)
+
+  function update(e) {
+    const { name, value } = e.target
+    setForm((prev) => ({ ...prev, [name]: value }))
+  }
 
   function handleSubmit(e) {
     e.preventDefault()
-    // Placeholder: wire to the application backend / form service before launch.
+    // Placeholder: POST `form` to the application backend / form service before launch.
     setSubmitted(true)
     window.scrollTo(0, 0)
   }
@@ -77,28 +94,66 @@ export default function Apply() {
                 <div className="field-row">
                   <div className="field">
                     <label htmlFor="name">Full name</label>
-                    <input id="name" name="name" type="text" required autoComplete="name" />
+                    <input
+                      id="name"
+                      name="name"
+                      type="text"
+                      required
+                      autoComplete="name"
+                      value={form.name}
+                      onChange={update}
+                    />
                   </div>
                   <div className="field">
                     <label htmlFor="email">Work email</label>
-                    <input id="email" name="email" type="email" required autoComplete="email" />
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      required
+                      autoComplete="email"
+                      value={form.email}
+                      onChange={update}
+                    />
                   </div>
                 </div>
 
                 <div className="field-row">
                   <div className="field">
                     <label htmlFor="company">Company</label>
-                    <input id="company" name="company" type="text" required autoComplete="organization" />
+                    <input
+                      id="company"
+                      name="company"
+                      type="text"
+                      required
+                      autoComplete="organization"
+                      value={form.company}
+                      onChange={update}
+                    />
                   </div>
                   <div className="field">
                     <label htmlFor="role">Your role</label>
-                    <input id="role" name="role" type="text" placeholder="e.g. Co-founder & CEO" required />
+                    <input
+                      id="role"
+                      name="role"
+                      type="text"
+                      placeholder="e.g. Co-founder & CEO"
+                      required
+                      value={form.role}
+                      onChange={update}
+                    />
                   </div>
                 </div>
 
                 <div className="field">
                   <label htmlFor="applicant-type">I’m applying as</label>
-                  <select id="applicant-type" name="applicantType" required defaultValue="">
+                  <select
+                    id="applicant-type"
+                    name="applicantType"
+                    required
+                    value={form.applicantType}
+                    onChange={update}
+                  >
                     <option value="" disabled>
                       Select one
                     </option>
@@ -113,7 +168,7 @@ export default function Apply() {
                 <div className="field-row">
                   <div className="field">
                     <label htmlFor="stage">Funding stage</label>
-                    <select id="stage" name="stage" required defaultValue="">
+                    <select id="stage" name="stage" required value={form.stage} onChange={update}>
                       <option value="" disabled>
                         Select one
                       </option>
@@ -126,7 +181,13 @@ export default function Apply() {
                   </div>
                   <div className="field">
                     <label htmlFor="modality">Modality</label>
-                    <select id="modality" name="modality" required defaultValue="">
+                    <select
+                      id="modality"
+                      name="modality"
+                      required
+                      value={form.modality}
+                      onChange={update}
+                    >
                       <option value="" disabled>
                         Select one
                       </option>
@@ -146,6 +207,8 @@ export default function Apply() {
                     name="want"
                     placeholder="Capital, customers, talent, peers who get it — tell us plainly."
                     required
+                    value={form.want}
+                    onChange={update}
                   />
                 </div>
 
