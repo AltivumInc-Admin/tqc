@@ -3,7 +3,8 @@
 The landing page for **The Quantum Collective**, the private, members-only network for funded
 quantum founders ($300/month). Built with React + Vite. Copy is sourced from
 `quantum_round_premium_strategy.pdf`; the section structure follows the page blueprint in
-`SPA.jpg` (03 Hero · 04 Problem · 05 Story · 06 Proof · 07 Features · 08 CTA).
+`SPA.jpg` (Hero · Problem · Story · Proof · Features · CTA — displayed on the page as
+sections 01–06).
 
 ## Stack
 

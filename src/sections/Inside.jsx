@@ -60,12 +60,12 @@ export default function Inside() {
   return (
     <section id="inside" className="section" aria-labelledby="inside-title">
       <span className="ghost-num" aria-hidden="true">
-        07
+        05
       </span>
       <div className="container">
         <Reveal>
           <p className="kicker">
-            <strong>07</strong> Inside the Round
+            <strong>05</strong> Inside the Round
           </p>
           <h2 id="inside-title" className="section-title">
             What $300 a month actually buys.

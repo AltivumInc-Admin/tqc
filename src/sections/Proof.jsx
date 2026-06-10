@@ -70,12 +70,12 @@ export default function Proof() {
   return (
     <section id="proof" className="section proof" aria-labelledby="proof-title">
       <span className="ghost-num" aria-hidden="true">
-        06
+        04
       </span>
       <div className="container">
         <Reveal>
           <p className="kicker">
-            <strong>06</strong> The Proof
+            <strong>04</strong> The Proof
           </p>
           <h2 id="proof-title" className="section-title">
             Receipts, not vibes.

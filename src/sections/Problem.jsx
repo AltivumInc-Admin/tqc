@@ -27,12 +27,12 @@ export default function Problem() {
   return (
     <section id="problem" className="section" aria-labelledby="problem-title">
       <span className="ghost-num" aria-hidden="true">
-        04
+        02
       </span>
       <div className="container">
         <Reveal>
           <p className="kicker">
-            <strong>04</strong> The Problem
+            <strong>02</strong> The Problem
           </p>
           <h2 id="problem-title" className="section-title">
             You run a funded quantum company. Where do you actually talk about it?

@@ -102,13 +102,13 @@ export default function FinalCta() {
   return (
     <section id="join" className="section cta-final" aria-labelledby="join-title">
       <span className="ghost-num" aria-hidden="true">
-        08
+        06
       </span>
       <div className="container">
         <div className="cta-head">
           <Reveal>
             <p className="kicker">
-              <strong>08</strong> The Ask
+              <strong>06</strong> The Ask
             </p>
             <h2 id="join-title" className="section-title">
               If you’re building quantum, you should be in the room.

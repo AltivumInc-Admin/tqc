@@ -4,12 +4,12 @@ import Mark from './Mark.jsx'
 import PaletteToggle from './PaletteToggle.jsx'
 
 const SECTIONS = [
-  { num: '03', id: 'network', label: 'Network' },
-  { num: '04', id: 'problem', label: 'Problem' },
-  { num: '05', id: 'story', label: 'Story' },
-  { num: '06', id: 'proof', label: 'Proof' },
-  { num: '07', id: 'inside', label: 'Inside' },
-  { num: '08', id: 'join', label: 'Join' },
+  { num: '01', id: 'network', label: 'Network' },
+  { num: '02', id: 'problem', label: 'Problem' },
+  { num: '03', id: 'story', label: 'Story' },
+  { num: '04', id: 'proof', label: 'Proof' },
+  { num: '05', id: 'inside', label: 'Inside' },
+  { num: '06', id: 'join', label: 'Join' },
 ]
 
 export default function Nav() {

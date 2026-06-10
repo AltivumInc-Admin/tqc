@@ -9,12 +9,14 @@ import { useEffect, useState } from 'react'
 const THEMES = [
   {
     id: 'ember',
-    name: 'Palette 01 — Parchment, Chestnut, Mushroom, Obsidian',
+    tag: 'A',
+    name: 'Palette A — Parchment, Chestnut, Mushroom, Obsidian',
     dots: ['#E7E1D4', '#B0664E', '#A4988C', '#05040B'],
   },
   {
     id: 'olive',
-    name: 'Palette 02 — Sage, Silver, Olive, Darkmoss',
+    tag: 'B',
+    name: 'Palette B — Sage, Silver, Olive, Darkmoss',
     dots: ['#E3E4DC', '#C4C4C6', '#827D65', '#494637'],
   },
 ]
@@ -47,7 +49,7 @@ export default function PaletteToggle() {
 
   return (
     <div className="palette-toggle" role="group" aria-label="Color palette comparison">
-      {THEMES.map((t, i) => (
+      {THEMES.map((t) => (
         <button
           key={t.id}
           type="button"
@@ -62,7 +64,7 @@ export default function PaletteToggle() {
             ))}
           </span>
           <span className="palette-num" aria-hidden="true">
-            0{i + 1}
+            {t.tag}
           </span>
           <span className="visually-hidden">{t.name}</span>
         </button>

@@ -4,12 +4,12 @@ export default function Story() {
   return (
     <section id="story" className="section story" aria-labelledby="story-title">
       <span className="ghost-num" aria-hidden="true">
-        05
+        03
       </span>
       <div className="container">
         <Reveal>
           <p className="kicker">
-            <strong>05</strong> The Story
+            <strong>03</strong> The Story
           </p>
           <h2 id="story-title" className="section-title">
             Built by an operator. Planted early, on purpose.
