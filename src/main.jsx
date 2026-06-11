@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import { ScrollTrigger } from './lib/fx.jsx'
+import { initMagnetic } from './lib/magnetic.js'
 
 import '@fontsource-variable/archivo/wdth.css'
 import '@fontsource-variable/archivo/wdth-italic.css'
@@ -19,6 +20,8 @@ import './styles/components.css'
 if (document.fonts?.ready) {
   document.fonts.ready.then(() => ScrollTrigger.refresh())
 }
+
+initMagnetic()
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

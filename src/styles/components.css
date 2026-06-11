@@ -267,7 +267,6 @@
   overflow: clip;
   min-height: 19rem;
   background: var(--black);
-  will-change: transform;
 }
 
 .bx-scene .hero-scene {
@@ -989,6 +988,18 @@
   border: 1px solid var(--line-strong);
   background: var(--bg);
   padding: clamp(1.8rem, 2.5vw, 2.3rem) clamp(1.5rem, 2vw, 1.9rem);
+  transition: translate 0.35s var(--ease-out), border-color 0.35s var(--ease-out);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tier:hover {
+    translate: 0 -5px;
+    border-color: var(--ink);
+  }
+
+  .tier.is-featured:hover {
+    border-color: var(--powder);
+  }
 }
 
 .tier.is-featured {
@@ -1177,6 +1188,14 @@
 
 .faq-item summary::-webkit-details-marker {
   display: none;
+}
+
+.faq-item summary {
+  transition: color 0.25s var(--ease-out);
+}
+
+.faq-item summary:hover {
+  color: var(--powder);
 }
 
 .faq-item summary::after {
@@ -1575,5 +1594,88 @@ select {
 @media (max-width: 760px) {
   .footer-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+
+/* ============ Interaction layer ============ */
+
+/* Reading-progress hairline along the nav's bottom edge */
+.nav-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--accent-display);
+  transform: scaleX(0);
+  transform-origin: left;
+  pointer-events: none;
+}
+
+/* Cursor companion — trails the native cursor, grows over targets.
+   Enabled from JS on fine pointers without reduced motion. */
+.cursor-ring {
+  display: none;
+  position: fixed;
+  top: -8px;
+  left: -8px;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid #fff;
+  border-radius: 50%;
+  mix-blend-mode: difference;
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 300;
+}
+
+/* fig. 04 live — the 3D Bloch sphere */
+.bloch3d {
+  position: relative;
+  aspect-ratio: 1 / 1.02;
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.bloch3d:active {
+  cursor: grabbing;
+}
+
+.bloch3d canvas {
+  display: block;
+}
+
+.b3-ket {
+  position: absolute;
+  left: 50%;
+  top: 0.2rem;
+  transform: translateX(-50%);
+  z-index: 1;
+  color: var(--ink-soft);
+  text-transform: none;
+  pointer-events: none;
+}
+
+.b3-ket.b3-bottom {
+  top: auto;
+  bottom: 0.2rem;
+}
+
+/* fig. 03 — the hv absorption arrow breathes, slowly */
+@media (prefers-reduced-motion: no-preference) {
+  .el-excite {
+    animation: el-breathe 4.5s ease-in-out infinite;
+  }
+
+  @keyframes el-breathe {
+    0%,
+    100% {
+      opacity: 0.55;
+    }
+
+    50% {
+      opacity: 1;
+    }
   }
 }

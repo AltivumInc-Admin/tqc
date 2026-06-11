@@ -45,18 +45,20 @@ export default function EnergyLevels() {
           <path d="M 0 0 L 8 4 L 0 8 z" fill="var(--accent-display)" />
         </marker>
       </defs>
-      <line
-        x1="72"
-        y1="122"
-        x2="72"
-        y2="96"
-        stroke="var(--accent-display)"
-        strokeWidth="1.4"
-        markerEnd="url(#el-arrow)"
-      />
-      <text x="80" y="112" className="el-hv">
-        hν — apply
-      </text>
+      <g className="el-excite">
+        <line
+          x1="72"
+          y1="122"
+          x2="72"
+          y2="96"
+          stroke="var(--accent-display)"
+          strokeWidth="1.4"
+          markerEnd="url(#el-arrow)"
+        />
+        <text x="80" y="112" className="el-hv">
+          hν — apply
+        </text>
+      </g>
     </svg>
   )
 }

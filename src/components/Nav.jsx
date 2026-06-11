@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import Mark from './Mark.jsx'
+import { gsap, useGSAP, MOTION_OK } from '../lib/fx.jsx'
 
 const SECTIONS = [
   { num: '01', id: 'network', label: 'Network' },
@@ -15,8 +16,26 @@ export default function Nav() {
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState('')
   const [overDark, setOverDark] = useState(true)
+  const progressRef = useRef(null)
   const { pathname } = useLocation()
   const onLanding = pathname === '/'
+
+  // Reading-progress hairline along the nav's bottom edge
+  useGSAP(() => {
+    const mm = gsap.matchMedia()
+    mm.add(MOTION_OK, () => {
+      gsap.fromTo(
+        progressRef.current,
+        { scaleX: 0 },
+        {
+          scaleX: 1,
+          ease: 'none',
+          scrollTrigger: { start: 0, end: 'max', scrub: 0.4, invalidateOnRefresh: true },
+        },
+      )
+      return undefined
+    })
+  }, [])
 
   // The nav floats over the black hero (ghost ink), then switches to
   // the light treatment once the hero scrolls away.
@@ -69,6 +88,7 @@ export default function Nav() {
 
   return (
     <header className={`nav${overDark || open ? ' on-dark ground-dark' : ''}`}>
+      <span ref={progressRef} className="nav-progress" aria-hidden="true" />
       <div className="container nav-inner">
         <Link to="/" className="nav-brand" aria-label="The Ground State Society — home">
           <Mark />

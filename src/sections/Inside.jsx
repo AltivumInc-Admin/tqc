@@ -127,7 +127,7 @@ export default function Inside() {
           </div>
           <div data-fade>
             {/* Real text, read naturally by AT — no role=img summary needed */}
-            <div className="receipt ground-dark">
+            <div className="receipt ground-dark" data-tilt>
               <span className="receipt-stamp label">Application only</span>
               <p className="receipt-head">The Ground State Society</p>
               <p className="receipt-sub label">The Round — annual membership</p>

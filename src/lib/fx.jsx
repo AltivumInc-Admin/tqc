@@ -98,6 +98,24 @@ export default function Fx({ as: Tag = 'div', className, children, ...rest }) {
           })
         })
 
+        // Decorative mosaics drift slightly against the scroll
+        scope.querySelectorAll('.mosaic').forEach((el) => {
+          gsap.fromTo(
+            el,
+            { yPercent: -8 },
+            {
+              yPercent: 10,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: el.parentElement,
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: 0.5,
+              },
+            },
+          )
+        })
+
         scope.querySelectorAll('[data-count]').forEach((el) => {
           const end = parseFloat(el.dataset.count)
           if (Number.isNaN(end)) return
@@ -115,6 +133,32 @@ export default function Fx({ as: Tag = 'div', className, children, ...rest }) {
             },
           })
         })
+      })
+
+      // Pointer tilt — fine pointers only, a few degrees, springs back
+      mm.add(`${MOTION_OK} and (pointer: fine)`, () => {
+        const removers = []
+        ref.current?.querySelectorAll('[data-tilt]').forEach((el) => {
+          gsap.set(el, { transformPerspective: 900 })
+          const rx = gsap.quickTo(el, 'rotationX', { duration: 0.6, ease: 'power3' })
+          const ry = gsap.quickTo(el, 'rotationY', { duration: 0.6, ease: 'power3' })
+          const move = (ev) => {
+            const r = el.getBoundingClientRect()
+            rx(((ev.clientY - r.top) / r.height - 0.5) * -5)
+            ry(((ev.clientX - r.left) / r.width - 0.5) * 6)
+          }
+          const leave = () => {
+            rx(0)
+            ry(0)
+          }
+          el.addEventListener('pointermove', move)
+          el.addEventListener('pointerleave', leave)
+          removers.push(() => {
+            el.removeEventListener('pointermove', move)
+            el.removeEventListener('pointerleave', leave)
+          })
+        })
+        return () => removers.forEach((r) => r())
       })
     },
     { scope: ref },

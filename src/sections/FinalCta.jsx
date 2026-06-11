@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Fx from '../lib/fx.jsx'
-import BlochSphere from '../components/figures/BlochSphere.jsx'
+import BlochFigure from '../components/figures/BlochFigure.jsx'
 import FigCaption from '../components/figures/FigCaption.jsx'
 import Mosaic from '../components/Mosaic.jsx'
 import { postJson } from '../lib/submit.js'
@@ -159,11 +159,10 @@ export default function FinalCta() {
             </p>
           </div>
           <figure className="qfig cta-fig" data-fade>
-            <div data-draw>
-              <BlochSphere />
-            </div>
+            <BlochFigure />
             <FigCaption num="04">
               A state holds both answers until it is measured. Applying is the measurement.
+              Drag to rotate.
             </FigCaption>
           </figure>
         </div>
