@@ -5,6 +5,9 @@ frontend:
       commands:
         - nvm use 22
         - npm ci
+        # Red backend tests block the deploy — the checkout handler's edge
+        # cases ride the same repo as the frontend
+        - npm test
     build:
       commands:
         - npm run build

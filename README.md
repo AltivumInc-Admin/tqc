@@ -134,13 +134,29 @@ node --env-file=.env.local backend/checkout/local.mjs   # handler on :8787
 # .env.local: VITE_CHECKOUT_ENDPOINT=http://localhost:8787
 ```
 
+Tests (`backend/checkout/test/handler.test.mjs` — routing, plan guard, signature
+verification, response allowlist; zero dependencies, Stripe is mocked):
+
+```bash
+npm test   # also runs in Amplify preBuild — a red suite blocks the deploy
+```
+
 Deploy (secrets come from the environment, never from samconfig.toml):
 
 ```bash
 cd backend/checkout
 sam deploy --parameter-overrides \
-  "StripeSecretKey=$STRIPE_SECRET_KEY PriceMonthly=price_... PriceAnnual=price_... StripeWebhookSecret=$STRIPE_WEBHOOK_SECRET"
+  "StripeSecretKey=$STRIPE_SECRET_KEY PriceMonthly=price_... PriceAnnual=price_... StripeWebhookSecret=$STRIPE_WEBHOOK_SECRET" \
+  "AlarmEmail=you@example.com"
 ```
+
+`AlarmEmail` wires two CloudWatch alarms to email: `CheckoutFailureAlarm` (a metric
+filter on the structured `stripe_error`/`unhandled` logs — the handler catches errors
+and returns 502, so the plain Lambda Errors metric alone would stay silent) and
+`CheckoutCrashAlarm` (invocation errors: crashes/timeouts). Confirm the SNS
+subscription from the email AWS sends after the first deploy. Leaving the parameter
+empty disables the alarms. Also enable Stripe Dashboard email notifications for
+failed webhook deliveries — an independent second net.
 
 Then set `VITE_CHECKOUT_ENDPOINT` to the stack's `ApiUrl` output (Amplify console for
 production). When it is unset, `/activate` renders an honest preview state. Before live
@@ -164,9 +180,12 @@ Setup:
 2. **SPA routing**: Amplify auto-creates a 200 rewrite for detected SPAs. The exact rule is
    versioned at `infra/amplify-rewrites.json` — paste it under **Hosting → Rewrites and
    redirects** if deep links such as `/apply` ever 404.
-3. After the first deploy, verify deep-link routing:
-   `./scripts/verify-deploy.sh https://<branch>.<app-id>.amplifyapp.com`
-4. Every push to `main` triggers a build and deploy.
+3. After every deploy that touches the frontend or the checkout stack, verify
+   deep-link routing AND that the shipped bundle points at a live API:
+   `./scripts/verify-deploy.sh https://groundstatesociety.com https://<api-id>.execute-api.us-east-2.amazonaws.com`
+   (the second argument is the stack's `ApiUrl` output; omitting it skips the API checks)
+4. Every push to `main` triggers a build and deploy — preBuild runs `npm test`,
+   so a red backend suite stops the publish.
 
 ## Project structure
 

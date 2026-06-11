@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --test \"backend/checkout/test/*.test.mjs\""
   },
   "dependencies": {
     "@fontsource-variable/archivo": "^5.2.8",

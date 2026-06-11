@@ -125,7 +125,11 @@ function signatureIsValid(payload, header, secret) {
     else if (k === 'v1') candidates.push(v)
   }
   if (!t || candidates.length === 0) return false
-  if (Math.abs(Date.now() / 1000 - Number(t)) > SIGNATURE_TOLERANCE_SEC) return false
+  // Number('garbage') is NaN, and NaN > tolerance is false — without the
+  // finite check a non-numeric timestamp would skip replay protection
+  const ts = Number(t)
+  if (!Number.isFinite(ts)) return false
+  if (Math.abs(Date.now() / 1000 - ts) > SIGNATURE_TOLERANCE_SEC) return false
 
   const expected = Buffer.from(
     createHmac('sha256', secret).update(`${t}.${payload}`, 'utf8').digest('hex'),
