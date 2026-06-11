@@ -91,6 +91,12 @@ p {
   outline-offset: 3px;
 }
 
+/* main receives programmatic focus on route changes (context for
+   assistive tech) — it is not an interactive target, no ring */
+main:focus {
+  outline: none;
+}
+
 /* ---- Layout primitives ---- */
 
 .container {

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Nav from './components/Nav.jsx'
 import Footer from './components/Footer.jsx'
@@ -14,6 +14,7 @@ import { ScrollTrigger } from './lib/fx.jsx'
    Keyed on location.key so re-clicking the same anchor scrolls again. */
 function ScrollManager() {
   const { pathname, hash, key } = useLocation()
+  const isFirst = useRef(true)
 
   useEffect(() => {
     if (hash) {
@@ -24,6 +25,7 @@ function ScrollManager() {
         // scroll position — cancelling the glide mid-flight.
         ScrollTrigger.refresh()
         el.scrollIntoView({ block: 'start' })
+        isFirst.current = false
         return undefined
       }
     }
@@ -31,6 +33,15 @@ function ScrollManager() {
     // previous page's length reads as broken, and the instant jump can't
     // be cancelled by the deferred refresh.
     window.scrollTo({ top: 0, behavior: 'instant' })
+    // Screen readers get no signal that an SPA "navigation" happened —
+    // moving focus to main announces the new page (with its new title).
+    // preventScroll: the scroll position was just set deliberately.
+    // Skipped on first load so initial focus stays at the document start.
+    if (isFirst.current) {
+      isFirst.current = false
+    } else {
+      document.getElementById('main')?.focus({ preventScroll: true })
+    }
     // Page height changes across routes — re-measure scroll triggers
     const id = requestAnimationFrame(() => ScrollTrigger.refresh())
     return () => cancelAnimationFrame(id)
@@ -48,7 +59,7 @@ export default function App() {
       <ScrollManager />
       <Cursor />
       <Nav />
-      <main id="main">
+      <main id="main" tabIndex={-1}>
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/story" element={<StoryPage />} />

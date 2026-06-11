@@ -1,5 +1,6 @@
 import { Component, Suspense, lazy, useEffect, useRef, useState } from 'react'
 import BlochSphere from './BlochSphere.jsx'
+import { useMotionPaused } from '../../lib/motion.js'
 
 /* fig. 04 goes live where it can: the 3D precessing Bloch sphere.
    The accurate SVG remains the figure under prefers-reduced-motion,
@@ -35,12 +36,20 @@ export default function BlochFigure() {
   const draggingRef = useRef(false)
   const [reduced] = useState(prefersReducedMotion)
   const [webgl] = useState(hasWebGL)
+  // Pause toggle swaps to the scientifically accurate static SVG
+  const paused = useMotionPaused()
   const [near, setNear] = useState(false) // mount the scene only as it approaches
   const [inView, setInView] = useState(true) // stop the loop off-screen
 
+  // Pausing unmounts the holder div, so the observers must re-attach when
+  // the scene path returns — a mount-only effect would leave `near` frozen
+  // and the figure permanently empty after pause → resume.
+  const showScene = !reduced && !paused && webgl
+
   useEffect(() => {
     const node = holderRef.current
-    if (!node || typeof IntersectionObserver === 'undefined') {
+    if (!node) return undefined // SVG fallback rendered — nothing to observe
+    if (typeof IntersectionObserver === 'undefined') {
       setNear(true)
       return undefined
     }
@@ -62,9 +71,9 @@ export default function BlochFigure() {
       nearObs.disconnect()
       liveObs.disconnect()
     }
-  }, [])
+  }, [showScene])
 
-  if (reduced || !webgl) return <BlochSphere />
+  if (!showScene) return <BlochSphere />
 
   const down = (e) => {
     draggingRef.current = true

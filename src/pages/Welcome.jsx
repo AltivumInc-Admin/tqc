@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import Fx from '../lib/fx.jsx'
+import usePageMeta from '../lib/usePageMeta.js'
 import { requestJson } from '../lib/submit.js'
 
 const CHECKOUT_ENDPOINT = import.meta.env.VITE_CHECKOUT_ENDPOINT
@@ -11,6 +12,7 @@ const CHECKOUT_ENDPOINT = import.meta.env.VITE_CHECKOUT_ENDPOINT
  * anything — "membership active" is a receipt, not a vibe.
  */
 export default function Welcome() {
+  usePageMeta({ title: 'Welcome', noindex: true })
   const [params] = useSearchParams()
   const sessionId = params.get('session_id')
   // checking | active | processing | incomplete | unknown

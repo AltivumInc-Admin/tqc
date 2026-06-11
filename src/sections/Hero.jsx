@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import HeroScene from '../components/HeroScene.jsx'
+import MotionToggle from '../components/MotionToggle.jsx'
 import { gsap, ScrollTrigger, useGSAP, MOTION_OK } from '../lib/fx.jsx'
 
 export default function Hero() {
@@ -81,6 +82,7 @@ export default function Hero() {
               fig. 01 — relaxation to the ground state. E₀ = ½ħω: even settled, the cloud
               never freezes. Scroll perturbs it.
             </p>
+            <MotionToggle />
           </div>
 
           <div className="bx bx-side">

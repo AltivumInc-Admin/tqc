@@ -1,7 +1,13 @@
 import { Link } from 'react-router-dom'
 import Story from '../sections/Story.jsx'
+import usePageMeta from '../lib/usePageMeta.js'
 
 export default function StoryPage() {
+  usePageMeta({
+    title: 'The Story',
+    description:
+      'Why The Ground State Society exists — the room being built for the people building the quantum economy.',
+  })
   return (
     <div className="story-page">
       <Story />

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Fx from '../lib/fx.jsx'
+import usePageMeta from '../lib/usePageMeta.js'
 import { requestJson } from '../lib/submit.js'
 
 const CHECKOUT_ENDPOINT = import.meta.env.VITE_CHECKOUT_ENDPOINT
@@ -28,6 +29,7 @@ const PLANS = [
 ]
 
 export default function Activate() {
+  usePageMeta({ title: 'Membership activation', noindex: true })
   const [plan, setPlan] = useState('monthly')
   // idle | redirecting | error
   const [status, setStatus] = useState('idle')

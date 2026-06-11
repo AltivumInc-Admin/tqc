@@ -4,10 +4,12 @@ import Proof from '../sections/Proof.jsx'
 import Inside from '../sections/Inside.jsx'
 import FinalCta from '../sections/FinalCta.jsx'
 import Fx from '../lib/fx.jsx'
+import usePageMeta from '../lib/usePageMeta.js'
 import WaveParticle from '../components/figures/WaveParticle.jsx'
 import FigCaption from '../components/figures/FigCaption.jsx'
 
 export default function Landing() {
+  usePageMeta()
   return (
     <>
       <Hero />

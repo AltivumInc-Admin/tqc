@@ -4,6 +4,7 @@ import Fx from '../lib/fx.jsx'
 import BlochFigure from '../components/figures/BlochFigure.jsx'
 import FigCaption from '../components/figures/FigCaption.jsx'
 import Mosaic from '../components/Mosaic.jsx'
+import MotionToggle from '../components/MotionToggle.jsx'
 import { postJson } from '../lib/submit.js'
 
 const SIGNAL_ENDPOINT = import.meta.env.VITE_SIGNAL_ENDPOINT
@@ -90,17 +91,21 @@ function SignalForm() {
         </p>
       </div>
       <div>
-        {status === 'sent' && (
-          <p className="signal-success" role="status">
-            <strong>You’re in.</strong> The next issue of The Signal will land in your inbox.
-          </p>
-        )}
-        {status === 'preview' && (
-          <p className="signal-success" role="status">
-            <strong>Noted — The Signal launches with the founding cohort.</strong> This preview
-            didn’t store your address; subscription opens at launch.
-          </p>
-        )}
+        {/* Persistent live region — role="status" on a freshly mounted node
+            announces nothing (see Welcome.jsx) */}
+        <div role="status">
+          {status === 'sent' && (
+            <p className="signal-success">
+              <strong>You’re in.</strong> The next issue of The Signal will land in your inbox.
+            </p>
+          )}
+          {status === 'preview' && (
+            <p className="signal-success">
+              <strong>Noted — The Signal launches with the founding cohort.</strong> This preview
+              didn’t store your address; subscription opens at launch.
+            </p>
+          )}
+        </div>
         {(status === 'idle' || status === 'sending' || status === 'error') && (
           <form
             className="signal-form"
@@ -168,6 +173,7 @@ export default function FinalCta() {
               A state holds both answers until it is measured. Applying is the measurement.
               Drag to rotate.
             </FigCaption>
+            <MotionToggle />
           </figure>
         </div>
 

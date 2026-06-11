@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Fx from '../lib/fx.jsx'
+import usePageMeta from '../lib/usePageMeta.js'
 import { postJson } from '../lib/submit.js'
 
 const APPLY_ENDPOINT = import.meta.env.VITE_APPLY_ENDPOINT
@@ -41,10 +42,22 @@ const INITIAL_FORM = {
 }
 
 export default function Apply() {
+  usePageMeta({
+    title: 'Apply to join The Round',
+    description:
+      'The application for The Round — the vetted peer network for quantum founders. Reviewed personally.',
+  })
   const [form, setForm] = useState(INITIAL_FORM)
   // idle | sending | sent | preview | error
   const [status, setStatus] = useState('idle')
   const [attempted, setAttempted] = useState(false)
+  const successRef = useRef(null)
+
+  // The form (holding focus on its submit button) unmounts on success —
+  // park focus on the confirmation heading so it isn't dropped to <body>
+  useEffect(() => {
+    if (status === 'sent' || status === 'preview') successRef.current?.focus()
+  }, [status])
 
   function update(e) {
     const { name, value } = e.target
@@ -84,31 +97,39 @@ export default function Apply() {
           <span aria-hidden="true">←</span> Back to the page
         </Link>
 
-        {status === 'sent' && (
-          <section className="apply-success ground-dark" aria-live="polite" data-fade>
-            <h2>Application received.</h2>
-            <p>
-              Every application is reviewed personally — you’ll hear from us either way. If the
-              room is right for you, the next step is a short conversation.
-            </p>
-            <Link to="/" className="btn btn-ghost">
-              Return to the page
-            </Link>
-          </section>
-        )}
+        {/* The live region must outlive the state swaps — aria-live on a
+            freshly mounted node announces nothing (see Welcome.jsx) */}
+        <div aria-live="polite">
+          {status === 'sent' && (
+            <section className="apply-success ground-dark">
+              <h2 ref={successRef} tabIndex={-1}>
+                Application received.
+              </h2>
+              <p>
+                Every application is reviewed personally — you’ll hear from us either way. If the
+                room is right for you, the next step is a short conversation.
+              </p>
+              <Link to="/" className="btn btn-ghost">
+                Return to the page
+              </Link>
+            </section>
+          )}
 
-        {status === 'preview' && (
-          <section className="apply-success ground-dark" aria-live="polite" data-fade>
-            <h2>Application noted — intake opens at launch.</h2>
-            <p>
-              This is a preview build: your application was not transmitted and nothing was
-              stored. Founding-cohort intake opens shortly — The Signal will announce it first.
-            </p>
-            <Link to="/#signal" className="btn btn-ghost">
-              Read The Signal — free
-            </Link>
-          </section>
-        )}
+          {status === 'preview' && (
+            <section className="apply-success ground-dark">
+              <h2 ref={successRef} tabIndex={-1}>
+                Application noted — intake opens at launch.
+              </h2>
+              <p>
+                This is a preview build: your application was not transmitted and nothing was
+                stored. Founding-cohort intake opens shortly — The Signal will announce it first.
+              </p>
+              <Link to="/#signal" className="btn btn-ghost">
+                Read The Signal — free
+              </Link>
+            </section>
+          )}
+        </div>
 
         {showForm && (
           <div className="apply-grid">

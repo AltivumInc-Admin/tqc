@@ -1,4 +1,5 @@
 import { Component, Suspense, lazy, useEffect, useRef, useState } from 'react'
+import { useMotionPaused } from '../lib/motion.js'
 
 /* The three.js bundle loads lazily so the page paints first. */
 const GroundStateScene = lazy(() => import('../three/GroundStateScene.jsx'))
@@ -26,6 +27,9 @@ export default function HeroScene({ energyRef }) {
   const holderRef = useRef(null)
   const [inView, setInView] = useState(true)
   const [reduced] = useState(prefersReducedMotion)
+  // The visitor's pause toggle reuses the reduced-motion path: static
+  // cloud, still camera, frameloop on demand
+  const paused = useMotionPaused()
 
   // Stop the render loop entirely once the hero scrolls away.
   useEffect(() => {
@@ -43,7 +47,7 @@ export default function HeroScene({ energyRef }) {
     <div ref={holderRef} className="hero-scene" aria-hidden="true">
       <SceneBoundary>
         <Suspense fallback={null}>
-          <GroundStateScene energyRef={energyRef} reduced={reduced} active={inView} />
+          <GroundStateScene energyRef={energyRef} reduced={reduced || paused} active={inView} />
         </Suspense>
       </SceneBoundary>
     </div>

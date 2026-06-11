@@ -299,6 +299,37 @@
   text-transform: none;
 }
 
+/* ============ Motion toggle (WCAG 2.2.2 pause mechanism) ============ */
+
+.motion-toggle {
+  background: none;
+  border: 1px solid var(--line-strong);
+  color: var(--ink-soft);
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  transition:
+    color 0.2s var(--ease-out),
+    border-color 0.2s var(--ease-out);
+}
+
+.motion-toggle:hover {
+  color: var(--ink);
+  border-color: var(--ink-soft);
+}
+
+/* In the hero it mirrors the caption: pinned to the scene's far corner */
+.bx-scene .motion-toggle {
+  position: absolute;
+  right: 1.1rem;
+  bottom: 0.85rem;
+  z-index: 1;
+}
+
+/* Under the Bloch figure caption, aligned with the caption's left edge */
+.cta-fig .motion-toggle {
+  margin-top: 0.9rem;
+}
+
 .bx-side {
   grid-area: side;
   display: grid;
