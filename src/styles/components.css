@@ -721,6 +721,23 @@
 
 .table-wrap {
   overflow-x: auto;
+  /* Powder edge glows appear only while columns hide off-screen —
+     the background-attachment: local covers slide over them at rest */
+  background:
+    linear-gradient(90deg, var(--bg) 40%, transparent) left center / 36px 100%,
+    linear-gradient(270deg, var(--bg) 40%, transparent) right center / 36px 100%,
+    linear-gradient(90deg, rgba(193, 216, 226, 0.2), transparent) left center / 14px 100%,
+    linear-gradient(270deg, rgba(193, 216, 226, 0.2), transparent) right center / 14px 100%;
+  background-repeat: no-repeat;
+  background-attachment: local, local, scroll, scroll;
+}
+
+/* Mobile-only hint above the matrix that more columns wait off-screen */
+.scroll-cue {
+  display: none;
+  text-align: right;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
 }
 
 .compare-table {
@@ -799,9 +816,83 @@
   }
 }
 
-@media (max-width: 560px) {
+/* --- Small screens: per-table treatments --- */
+
+@media (max-width: 760px) {
+  .scroll-cue {
+    display: block;
+  }
+
+  /* The matrix pins its attribute column so the comparison stays
+     legible while the alternatives scroll underneath */
+  .compare-table.is-matrix {
+    font-size: 0.8rem;
+  }
+
+  .compare-table.is-matrix thead th:first-child,
+  .compare-table.is-matrix tbody th[scope='row'] {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    max-width: 9.5rem;
+    background-color: var(--bg);
+    padding-right: 0.8rem;
+    border-right: 1px solid var(--line);
+  }
+
+  /* Composite the is-us row tint over the solid sticky background */
+  .compare-table.is-matrix tr.is-us th[scope='row'] {
+    background-image: linear-gradient(rgba(193, 216, 226, 0.06), rgba(193, 216, 226, 0.06));
+  }
+}
+
+@media (max-width: 640px) {
   .stats {
     grid-template-columns: 1fr;
+  }
+
+  /* The pricing table reflows into stacked rows — nothing hides,
+     nothing scrolls */
+  .compare-table.is-stack {
+    min-width: 0;
+  }
+
+  .compare-table.is-stack thead {
+    display: none;
+  }
+
+  .compare-table.is-stack tbody,
+  .compare-table.is-stack tr,
+  .compare-table.is-stack th,
+  .compare-table.is-stack td {
+    display: block;
+  }
+
+  .compare-table.is-stack tr {
+    padding-block: 0.95rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .compare-table.is-stack tr.is-us {
+    padding-inline: 0.8rem;
+  }
+
+  .compare-table.is-stack th,
+  .compare-table.is-stack td {
+    border: none;
+    padding: 0.12rem 0;
+  }
+
+  .compare-table.is-stack td[data-label]::before {
+    content: attr(data-label);
+    display: inline-block;
+    width: 7.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
   }
 }
 

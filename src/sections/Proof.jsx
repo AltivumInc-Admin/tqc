@@ -123,7 +123,9 @@ export default function Proof() {
         <div className="proof-tables">
           <div data-fade>
             <div className="table-wrap">
-              <table className="compare-table">
+              {/* is-stack: reflows into stacked rows on small screens —
+                  three prose columns need no horizontal scroll */}
+              <table className="compare-table is-stack">
                 <caption className="label">What the premium peer-network market charges</caption>
                 <thead>
                   <tr>
@@ -136,14 +138,14 @@ export default function Proof() {
                   {NETWORKS.map((n) => (
                     <tr key={n.name}>
                       <th scope="row">{n.name}</th>
-                      <td>{n.price}</td>
-                      <td className="muted">{n.bar}</td>
+                      <td data-label="Price">{n.price}</td>
+                      <td data-label="Bar to enter" className="muted">{n.bar}</td>
                     </tr>
                   ))}
                   <tr className="is-us">
                     <th scope="row">The Ground State Society</th>
-                    <td>$3,600 / yr ($300 / mo)</td>
-                    <td>Vetted quantum founders</td>
+                    <td data-label="Price">$3,600 / yr ($300 / mo)</td>
+                    <td data-label="Bar to enter">Vetted quantum founders</td>
                   </tr>
                 </tbody>
               </table>
@@ -156,8 +158,13 @@ export default function Proof() {
           </div>
 
           <div data-fade>
+            {/* The matrix keeps its grid on mobile: first column pins,
+                edge glow marks hidden columns, and the cue says so */}
+            <p className="scroll-cue label" aria-hidden="true">
+              scroll →
+            </p>
             <div className="table-wrap">
-              <table className="compare-table">
+              <table className="compare-table is-matrix">
                 <caption className="label">The only room with every box checked</caption>
                 <thead>
                   <tr>
