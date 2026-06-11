@@ -16,7 +16,9 @@ export default function Landing() {
       <Story />
       <Fx as="figure" className="fig-divider ground-dark" aria-hidden="false">
         <div className="container">
-          <div data-draw>
+          {/* The band is the whole moment — give the draw nearly a full
+              viewport of scroll so the wave can be watched, not glimpsed */}
+          <div data-draw data-draw-start="top 96%" data-draw-end="top 6%">
             <WaveParticle />
           </div>
           <FigCaption num="02">

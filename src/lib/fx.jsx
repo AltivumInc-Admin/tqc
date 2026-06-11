@@ -73,19 +73,31 @@ export default function Fx({ as: Tag = 'div', className, children, ...rest }) {
         })
 
         scope.querySelectorAll('[data-draw]').forEach((el) => {
-          const strokes = el.querySelectorAll('path, line, circle, ellipse, polyline')
-          if (!strokes.length) return
-          gsap.from(strokes, {
-            drawSVG: 0,
-            stagger: 0.04,
-            ease: 'none',
+          const shapes = [...el.querySelectorAll('path, line, circle, ellipse, polyline')]
+          if (!shapes.length) return
+          // Stroked shapes draw in; fill-only shapes (the particle dots)
+          // materialize afterwards, one by one — wave first, then its
+          // discrete samples.
+          const drawables = shapes.filter((s) => getComputedStyle(s).stroke !== 'none')
+          const dots = shapes.filter((s) => getComputedStyle(s).stroke === 'none')
+          const tl = gsap.timeline({
             scrollTrigger: {
               trigger: el,
-              start: 'top 88%',
-              end: 'top 38%',
-              scrub: 0.6,
+              start: el.dataset.drawStart || 'top 90%',
+              end: el.dataset.drawEnd || 'top 25%',
+              scrub: 1,
             },
           })
+          if (drawables.length) {
+            tl.from(drawables, { drawSVG: 0, stagger: 0.04, ease: 'none', duration: 1 })
+          }
+          if (dots.length) {
+            tl.from(
+              dots,
+              { autoAlpha: 0, stagger: 0.07, duration: 0.4, ease: 'none' },
+              drawables.length ? '-=0.25' : 0,
+            )
+          }
         })
 
         scope.querySelectorAll('[data-cells]').forEach((el) => {
