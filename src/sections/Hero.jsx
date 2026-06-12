@@ -12,18 +12,27 @@ export default function Hero() {
 
   useGSAP(
     () => {
+      // Prerendered first paint: the wordmark is already on screen —
+      // replaying the entrance would hide what the visitor has read.
+      // Read-and-clear, so client-side returns to / still animate.
+      const root = document.getElementById('root')
+      const prerendered = root?.dataset.prerendered === 'true'
+      if (prerendered) delete root.dataset.prerendered
+
       const mm = gsap.matchMedia()
 
       mm.add(MOTION_OK, () => {
-        // Load: the bento assembles, then the wordmark lines rise.
-        gsap
-          .timeline({ defaults: { ease: 'power3.out' } })
-          .from('.bx', { autoAlpha: 0, y: 18, duration: 0.8, stagger: 0.09 }, 0.15)
-          .from(
-            '.wm-line',
-            { yPercent: 110, duration: 1.1, stagger: 0.14, ease: 'power4.out' },
-            0.5,
-          )
+        if (!prerendered) {
+          // Load: the bento assembles, then the wordmark lines rise.
+          gsap
+            .timeline({ defaults: { ease: 'power3.out' } })
+            .from('.bx', { autoAlpha: 0, y: 18, duration: 0.8, stagger: 0.09 }, 0.15)
+            .from(
+              '.wm-line',
+              { yPercent: 110, duration: 1.1, stagger: 0.14, ease: 'power4.out' },
+              0.5,
+            )
+        }
 
         // No pin, no zoom — the bento scrolls away naturally, but
         // scrolling still injects energy into the cloud (the caption

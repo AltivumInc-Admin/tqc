@@ -34,8 +34,15 @@ export default function BlochFigure() {
   const holderRef = useRef(null)
   const yawRef = useRef(0)
   const draggingRef = useRef(false)
-  const [reduced] = useState(prefersReducedMotion)
-  const [webgl] = useState(hasWebGL)
+  // The SVG is the figure until the client proves it can do better —
+  // prerendered HTML and the hydration pass must agree, so the media
+  // query and WebGL probe run in an effect, not in render.
+  const [reduced, setReduced] = useState(true)
+  const [webgl, setWebgl] = useState(false)
+  useEffect(() => {
+    setReduced(prefersReducedMotion())
+    setWebgl(hasWebGL())
+  }, [])
   // Pause toggle swaps to the scientifically accurate static SVG
   const paused = useMotionPaused()
   const [near, setNear] = useState(false) // mount the scene only as it approaches

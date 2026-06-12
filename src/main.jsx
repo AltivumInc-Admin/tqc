@@ -1,5 +1,5 @@
 import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, hydrateRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import { ScrollTrigger } from './lib/fx.jsx'
@@ -24,10 +24,25 @@ if (document.fonts?.ready) {
 
 initMagnetic()
 
-createRoot(document.getElementById('root')).render(
+const container = document.getElementById('root')
+const app = (
   <StrictMode>
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </StrictMode>,
+  </StrictMode>
 )
+
+/* The Amplify catch-all serves the prerendered LANDING html for every
+   extensionless path — hydrating /apply against landing markup would
+   mismatch. Only "/" hydrates; other routes clear and client-render
+   exactly as before. */
+if (container.firstChild && window.location.pathname === '/') {
+  hydrateRoot(container, app)
+} else {
+  container.textContent = ''
+  // The flag rides the prerendered markup — once that's wiped, a later
+  // client-side visit to / deserves its entrance animation.
+  delete container.dataset.prerendered
+  createRoot(container).render(app)
+}
